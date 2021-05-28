@@ -1,7 +1,12 @@
 import boto3
 import uuid
 import os
+from datetime import date
 from botocore.exceptions import ClientError
+
+
+def validate_date(date):
+    return date.strftime('%d-%m-%Y')
 
 
 client = boto3.resource('dynamodb')
@@ -14,19 +19,19 @@ def lambda_handler(event, context):
     try:
         response = table.put_item(
             Item = {
-                'uuid': uuid.uuid4(),
+                'id': str(uuid.uuid4()),
                 'title': event.get('title', ''),
                 'description': event.get('description', ''),
-                'date': event.get('date', '')            
+                'date': validate_date(date.today())          
             }
         )
     except ClientError as e:
         return {
-            'statusCode': '404',
+            'statusCode': '500',
             'errorMessage': e.response['Error']['Message']
         }
 
     return {
         'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
-        'body': 'Announcement \"' + event.get('title', 'undefined') + '\" posted'
+        'body': 'Announcement "' + event.get('title', 'undefined') + '" posted'
     }

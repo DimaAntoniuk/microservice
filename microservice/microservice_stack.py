@@ -49,28 +49,22 @@ class MicroserviceStack(core.Stack):
         # grant permission to lambda to read from demo table
         announcements_table.grant_read_data(consumer_lambda)
 
-        # create a Cloudwatch Event rule
-        one_minute_rule = aws_events.Rule(
-            self, "one_minute_rule",
-            schedule=aws_events.Schedule.rate(core.Duration.minutes(1)),
-        )
-
-        # Add target to Cloudwatch Event
-        one_minute_rule.add_target(aws_events_targets.LambdaFunction(producer_lambda))
-        one_minute_rule.add_target(aws_events_targets.LambdaFunction(consumer_lambda))
-
         api = aws_apigateway.RestApi(self, "announcement-api",
                   rest_api_name="Announcement Service",
                   description="Announcements.")
         
         announcements = api.root.add_resource("announcements")
 
-        get_announcements_integration = aws_apigateway.LambdaIntegration(consumer_lambda,
+        get_announcements_integration = aws_apigateway.LambdaIntegration(consumer_lambda, proxy=False,
                 request_templates={"application/json": '{ "statusCode": "200" }'})
 
-        post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,
-                request_templates={"application/json": '{ "statusCode": "200" , "title": "title_temp", "description":"temp_description", "date": "temp_date"}'})
+        post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=False,
+                method_responses=[MethodResponse(status_code="200")])
 
+        announcements.add_method("GET", get_announcements_integration, api_key_required=False)
+        announcements.add_method("POST", post_announcement_integration, api_key_required=False)
 
-        announcements.add_method("GET", get_announcements_integration)
-        announcements.add_method("POST", post_announcement_integration)
+        # key = api.add_api_key("ApiKey",
+        #     api_key_name="secret-key-name",
+        #     value="secret-ley-value"
+        # )

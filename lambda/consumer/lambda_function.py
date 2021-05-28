@@ -18,7 +18,7 @@ def lambda_handler(event, context):
             items.extend(response['Items'])
     except ClientError as e:
         return {
-            'statusCode': '404',
+            'statusCode': '500',
             'errorMessage': e.response['Error']['Message']
         }
     return {
