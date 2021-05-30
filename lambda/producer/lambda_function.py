@@ -16,12 +16,13 @@ TABLE_NAME = os.environ['TABLE_NAME']
 def lambda_handler(event, context):
     client = boto3.resource('dynamodb')
     table = client.Table(TABLE_NAME)
+    print(str(event['queryStringParameters']))
     try:
         response = table.put_item(
             Item = {
                 'id': str(uuid.uuid4()),
-                'title': event.get('title', ''),
-                'description': event.get('description', ''),
+                'title': event['queryStringParameters']['title'],
+                'description': event['queryStringParameters']['description'],
                 'date': validate_date(date.today())          
             }
         )
@@ -33,5 +34,5 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': '200',
-        'body': 'Announcement "' + event.get('title', 'undefined') + '" posted'
+        'body': 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
     }

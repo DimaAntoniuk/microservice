@@ -55,27 +55,28 @@ class MicroserviceStack(core.Stack):
         
         announcements = api.root.add_resource("announcements")
 
+        
+
         consumer_response_model = api.add_model("ConsumerResponseModel",
             content_type="application/json",
-            model_name="ResponseModel",
+            model_name="ConsumerResponseModel",
             schema={
-                "type": "object",
+                "type": aws_apigateway.JsonSchemaType.OBJECT,
                 "properties": {
-                    "statusCode": {"type": "string"},
-                    "body": {"type": "object"}
+                    "statusCode": aws_apigateway.JsonSchemaType.STRING,
+                    "body": aws_apigateway.JsonSchemaType.OBJECT
                 }
             }
         )
 
         producer_response_model = api.add_model("ProducerResponseModel",
             content_type="application/json",
-            model_name="ResponseModel",
+            model_name="ProducerResponseModel",
             schema={
-                "title": "producerResponse",
-                "type": {"type": "object"},
+                "type": aws_apigateway.JsonSchemaType.OBJECT,
                 "properties": {
-                    "statusCode": {"type": "string"},
-                    "body": {"type": "string"}
+                    "statusCode": aws_apigateway.JsonSchemaType.STRING,
+                    "body": aws_apigateway.JsonSchemaType.STRING
                 }
             }
         )
@@ -84,11 +85,10 @@ class MicroserviceStack(core.Stack):
             content_type="application/json",
             model_name="ErrorResponseModel",
             schema={
-                "title": "errorResponse",
-                "type": "object",
+                "type": aws_apigateway.JsonSchemaType.OBJECT,
                 "properties": {
-                    "statusCode": {"type": "string"},
-                    "errorMessage": {"type": "string"}
+                    "statusCode": aws_apigateway.JsonSchemaType.STRING,
+                    "errorMessage": aws_apigateway.JsonSchemaType.STRING
                 }
             }
         )
@@ -97,25 +97,29 @@ class MicroserviceStack(core.Stack):
                 request_templates={"application/json": '{ "statusCode": "200" }'},
                 integration_responses=[{
                     "statusCode": "200",
-                    "body": {"type": "object"}
+                    "body": aws_apigateway.JsonSchemaType.OBJECT
                 }, {
                     "statusCode": "400",
-                    "errorMessage": {"type": "string"}
+                    "errorMessage": aws_apigateway.JsonSchemaType.STRING
                 }])
 
-        post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=False,
+        post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=True,
+                # request_parameters={
+                #     "integration.request.querystring.title": "method.request.body.title",
+                #     "integration.request.querystring.description": "method.request.body.description"
+                # },
                 integration_responses=[{
                     "statusCode": "200",
-                    "body": {"type": "string"}
+                    "body": aws_apigateway.JsonSchemaType.STRING
                 }, {
                     "statusCode": "400",
-                    "errorMessage": {"type": "string"}
+                    "errorMessage": aws_apigateway.JsonSchemaType.STRING
                 }],
                 )
 
         announcements.add_method("GET", get_announcements_integration, api_key_required=False,
                 method_responses=[{
-                    "status_code": "200",
+                    "statusCode": "200",
                     "response_parameters": {
                         "method.response.header._content-_type": True,
                         "method.response.header._access-_control-_allow-_origin": True,
@@ -123,7 +127,7 @@ class MicroserviceStack(core.Stack):
                     },
                     "response_models": {"application/json": consumer_response_model}
                 }, {
-                    "status_code": "400",
+                    "statusCode": "400",
                     "response_parameters": {
                         "method.response.header._content-_type": True,
                         "method.response.header._access-_control-_allow-_origin": True,
@@ -131,13 +135,13 @@ class MicroserviceStack(core.Stack):
                     },
                     "response_models": {"application/json": error_response_model}
                 }])
-        announcements.add_method("POST", post_announcement_integration, api_key_required=True,
+        announcements.add_method("POST", post_announcement_integration, api_key_required=False,
                 request_parameters={
                     "method.request.querystring.title": True,
                     "method.request.querystring.description": True
                 },
                 method_responses=[{
-                    "status_code": "200",
+                    "statusCode": "200",
                     "response_parameters": {
                         "method.response.header._content-_type": True,
                         "method.response.header._access-_control-_allow-_origin": True,
@@ -145,7 +149,7 @@ class MicroserviceStack(core.Stack):
                     },
                     "response_models": {"application/json": producer_response_model}
                 }, {
-                    "status_code": "400",
+                    "statusCode": "400",
                     "response_parameters": {
                         "method.response.header._content-_type": True,
                         "method.response.header._access-_control-_allow-_origin": True,
@@ -156,4 +160,8 @@ class MicroserviceStack(core.Stack):
 
         key = api.add_api_key("MyApiKey")
 
-        plan = api.add_usage_plan('UsagePlan', name='MyPlan', api_key=key)
+        plan = api.add_usage_plan('UsagePlan', name='MyPlan', api_key=key,
+                throttle={
+                    "rate_limit": 100,
+                    "burst_limit": 100
+                })
