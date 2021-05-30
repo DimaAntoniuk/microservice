@@ -27,11 +27,11 @@ def lambda_handler(event, context):
         )
     except ClientError as e:
         return {
-            'statusCode': '500',
+            'statusCode': '400',
             'errorMessage': e.response['Error']['Message']
         }
 
     return {
-        'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+        'statusCode': '200',
         'body': 'Announcement "' + event.get('title', 'undefined') + '" posted'
     }

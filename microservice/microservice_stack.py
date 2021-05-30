@@ -55,16 +55,105 @@ class MicroserviceStack(core.Stack):
         
         announcements = api.root.add_resource("announcements")
 
+        consumer_response_model = api.add_model("ConsumerResponseModel",
+            content_type="application/json",
+            model_name="ResponseModel",
+            schema={
+                "type": "object",
+                "properties": {
+                    "statusCode": {"type": "string"},
+                    "body": {"type": "object"}
+                }
+            }
+        )
+
+        producer_response_model = api.add_model("ProducerResponseModel",
+            content_type="application/json",
+            model_name="ResponseModel",
+            schema={
+                "title": "producerResponse",
+                "type": {"type": "object"},
+                "properties": {
+                    "statusCode": {"type": "string"},
+                    "body": {"type": "string"}
+                }
+            }
+        )
+
+        error_response_model = api.add_model("ErrorResponseModel",
+            content_type="application/json",
+            model_name="ErrorResponseModel",
+            schema={
+                "title": "errorResponse",
+                "type": "object",
+                "properties": {
+                    "statusCode": {"type": "string"},
+                    "errorMessage": {"type": "string"}
+                }
+            }
+        )
+
         get_announcements_integration = aws_apigateway.LambdaIntegration(consumer_lambda, proxy=False,
-                request_templates={"application/json": '{ "statusCode": "200" }'})
+                request_templates={"application/json": '{ "statusCode": "200" }'},
+                integration_responses=[{
+                    "statusCode": "200",
+                    "body": {"type": "object"}
+                }, {
+                    "statusCode": "400",
+                    "errorMessage": {"type": "string"}
+                }])
 
         post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=False,
-                method_responses=[MethodResponse(status_code="200")])
+                integration_responses=[{
+                    "statusCode": "200",
+                    "body": {"type": "string"}
+                }, {
+                    "statusCode": "400",
+                    "errorMessage": {"type": "string"}
+                }],
+                )
 
-        announcements.add_method("GET", get_announcements_integration, api_key_required=False)
-        announcements.add_method("POST", post_announcement_integration, api_key_required=False)
+        announcements.add_method("GET", get_announcements_integration, api_key_required=False,
+                method_responses=[{
+                    "status_code": "200",
+                    "response_parameters": {
+                        "method.response.header._content-_type": True,
+                        "method.response.header._access-_control-_allow-_origin": True,
+                        "method.response.header._access-_control-_allow-_credentials": True
+                    },
+                    "response_models": {"application/json": consumer_response_model}
+                }, {
+                    "status_code": "400",
+                    "response_parameters": {
+                        "method.response.header._content-_type": True,
+                        "method.response.header._access-_control-_allow-_origin": True,
+                        "method.response.header._access-_control-_allow-_credentials": True
+                    },
+                    "response_models": {"application/json": error_response_model}
+                }])
+        announcements.add_method("POST", post_announcement_integration, api_key_required=True,
+                request_parameters={
+                    "method.request.querystring.title": True,
+                    "method.request.querystring.description": True
+                },
+                method_responses=[{
+                    "status_code": "200",
+                    "response_parameters": {
+                        "method.response.header._content-_type": True,
+                        "method.response.header._access-_control-_allow-_origin": True,
+                        "method.response.header._access-_control-_allow-_credentials": True
+                    },
+                    "response_models": {"application/json": producer_response_model}
+                }, {
+                    "status_code": "400",
+                    "response_parameters": {
+                        "method.response.header._content-_type": True,
+                        "method.response.header._access-_control-_allow-_origin": True,
+                        "method.response.header._access-_control-_allow-_credentials": True
+                    },
+                    "response_models": {"application/json": error_response_model}
+                }])
 
-        # key = api.add_api_key("ApiKey",
-        #     api_key_name="secret-key-name",
-        #     value="secret-ley-value"
-        # )
+        key = api.add_api_key("MyApiKey")
+
+        plan = api.add_usage_plan('UsagePlan', name='MyPlan', api_key=key)
