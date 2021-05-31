@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "12f2fdfb-468f-4cc1-be10-68b708470724",
+		"name": "announcements",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get-announcements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "post-announcements",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "5uaHfGPQ6j3fp1IZCxwWH18mZoFihBdS9TvmWeN6",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Micro-annou-7X8G4CN79OVB",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"secondtitle\",\r\n    \"description\": \"seconddescription\"\r\n}"
+				},
+				"url": {
+					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements?title=testtitle&description=testdescription",
+					"protocol": "https",
+					"host": [
+						"6i70ry8ivk",
+						"execute-api",
+						"eu-west-3",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"announcements"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "testtitle"
+						},
+						{
+							"key": "description",
+							"value": "testdescription"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
