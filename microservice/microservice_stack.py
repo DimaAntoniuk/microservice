@@ -165,13 +165,12 @@ class MicroserviceStack(core.Stack):
                 })
 
         plan.add_api_stage(
-            stage=api.prod_stage,
+            stage=api.deployment_stage,
             throttle=[{
-                    "method": post_announcements_method,
-                    "throttle": {
-                        "rate_limit": 100,
-                        "burst_limit": 100
-                    }
+                "method": post_announcements_method,
+                "throttle": {
+                    "rate_limit": 100,
+                    "burst_limit": 100
                 }
-            ]
+            }]
         )
