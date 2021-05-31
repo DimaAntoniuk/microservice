@@ -57,9 +57,13 @@ command.
  * `cdk diff`        compare deployed stack with current state
  * `cdk docs`        open CDK documentation
 
+## Chsnge deployable account according to awscli configuration
+
+Edit `ACCOUNT_ID` and `REGION` constants in `%ROOT_DIR%/config/secret_config.py` file
+
 ## Postman collection
 
-%ROOT_DIR%/announcements.postman_collection.json
+`%ROOT_DIR%/announcements.postman_collection.json`
 
 ## Unittests
 
