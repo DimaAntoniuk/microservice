@@ -31,7 +31,7 @@ def use_moto():
         dynamodb = boto3.resource('dynamodb', region_name='eu-west-3')
 
         # Create the table
-        dynamodb.create_table(
+        table = dynamodb.create_table(
             TableName=TABLE_NAME,
             KeySchema=[
                 {
@@ -65,7 +65,7 @@ def fake_use_moto():
         dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 
         # Create the table
-        dynamodb.create_table(
+        table = dynamodb.create_table(
             TableName='fake',
             KeySchema=[
                 {
@@ -123,7 +123,7 @@ def test_consumer_handler_for_valid_response(use_moto):
         }
     }
 
-    return_data = producer_lambda.lambda_handler(event, "")
+    return_data = producer_lambda.lambda_handler(event, "", table=table)
 
     assert return_data['statusCode'] == '200'
     assert return_data['body'] == 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
@@ -132,7 +132,7 @@ def test_consumer_handler_for_valid_response(use_moto):
         "statusCode": "200"
     }
 
-    return_data = consumer_lambda.lambda_handler(event, "")
+    return_data = consumer_lambda.lambda_handler(event, "", table=table)
     print(str(return_data))
 
     assert return_data['statusCode'] == '200'
@@ -161,7 +161,7 @@ def test_producer_handler_for_failure(fake_use_moto):
 @mock_dynamodb2
 def test_producer_handler_for_valid_response(use_moto):
     use_moto()
-
+    table = boto3.resource('dynamodb', region_name='eu-west-3').Table(TABLE_NAME)
     event = {
         "queryStringParameters": {
             "title":"dummy",
@@ -169,7 +169,7 @@ def test_producer_handler_for_valid_response(use_moto):
         }
     }
 
-    return_data = producer_lambda.lambda_handler(event, "")
+    return_data = producer_lambda.lambda_handler(event, "", table=table)
 
     assert return_data['statusCode'] == '200'
     assert return_data['body'] == 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
@@ -177,6 +177,7 @@ def test_producer_handler_for_valid_response(use_moto):
 @mock_dynamodb2
 def test_full_microservice(use_moto):
     use_moto()
+    table = boto3.resource('dynamodb', region_name='eu-west-3').Table(TABLE_NAME)
     event = {
         "queryStringParameters": {
             "title":"test",
@@ -184,7 +185,7 @@ def test_full_microservice(use_moto):
         }
     }
 
-    return_data = producer_lambda.lambda_handler(event, "")
+    return_data = producer_lambda.lambda_handler(event, "", table=table)
 
     assert return_data['statusCode'] == '200'
     assert return_data['body'] == 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
@@ -193,7 +194,7 @@ def test_full_microservice(use_moto):
         "statusCode": "200"
     }
 
-    return_data = consumer_lambda.lambda_handler(event, "")
+    return_data = consumer_lambda.lambda_handler(event, "", table=table)
     print(str(return_data))
 
     assert return_data['statusCode'] == '200'

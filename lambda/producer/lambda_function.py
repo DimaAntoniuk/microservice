@@ -14,7 +14,7 @@ client = boto3.resource('dynamodb')
 table = client.Table(TABLE_NAME)
 
 
-def lambda_handler(event, context):
+def lambda_handler(event, context, table=table):
     try:
         response = table.put_item(
             Item = {
