@@ -8,9 +8,26 @@
 		{
 			"name": "get-announcements",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
-				"url": null
+				"url": {
+					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+					"protocol": "https",
+					"host": [
+						"6i70ry8ivk",
+						"execute-api",
+						"eu-west-3",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"announcements"
+					]
+				}
 			},
 			"response": []
 		},
@@ -21,18 +38,18 @@
 					"type": "apikey",
 					"apikey": [
 						{
-							"key": "in",
-							"value": "query",
+							"key": "key",
+							"value": "x-api-key",
 							"type": "string"
 						},
 						{
 							"key": "value",
-							"value": "5uaHfGPQ6j3fp1IZCxwWH18mZoFihBdS9TvmWeN6",
+							"value": "5uaHfGPQ6j3fp1lZCxwWH18mZoFihBdS9TvmWeN6",
 							"type": "string"
 						},
 						{
-							"key": "key",
-							"value": "Micro-annou-7X8G4CN79OVB",
+							"key": "in",
+							"value": "header",
 							"type": "string"
 						}
 					]
@@ -41,7 +58,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"secondtitle\",\r\n    \"description\": \"seconddescription\"\r\n}"
+					"raw": ""
 				},
 				"url": {
 					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements?title=testtitle&description=testdescription",
