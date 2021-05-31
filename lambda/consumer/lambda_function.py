@@ -5,11 +5,11 @@ from botocore.exceptions import ClientError
 
 
 TABLE_NAME = os.environ['TABLE_NAME']
+client = boto3.resource('dynamodb')
+table = client.Table(TABLE_NAME)
 
 
 def lambda_handler(event, context):
-    client = boto3.resource('dynamodb')
-    table = client.Table(TABLE_NAME)
     try:
         response = table.scan()
         items = response['Items']

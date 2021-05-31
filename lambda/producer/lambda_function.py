@@ -10,11 +10,11 @@ def validate_date(date):
 
 
 TABLE_NAME = os.environ['TABLE_NAME']
+client = boto3.resource('dynamodb')
+table = client.Table(TABLE_NAME)
 
 
 def lambda_handler(event, context):
-    client = boto3.resource('dynamodb')
-    table = client.Table(TABLE_NAME)
     try:
         response = table.put_item(
             Item = {
