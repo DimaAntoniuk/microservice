@@ -57,9 +57,13 @@ command.
  * `cdk diff`        compare deployed stack with current state
  * `cdk docs`        open CDK documentation
 
-Postman collection to test api: .announcements.postman_collection.json
+## Postman collection
 
-It is possible to run pytest tests for lambdas (.lambda/test_lambda.py ): 
+%ROOT_DIR%/announcements.postman_collection.json
+
+## Unittests
+
+It is possible to run pytest tests for lambdas ( `%ROOT_DIR%/lambda/test_lambda.py` ): 
 ```
 $ pytest
 ```
