@@ -2,8 +2,6 @@ from aws_cdk import (
     core,
     aws_lambda,
     aws_dynamodb,
-    aws_events,
-    aws_events_targets,
     aws_apigateway
 )
 from config import config
@@ -135,7 +133,7 @@ class MicroserviceStack(core.Stack):
                     },
                     "response_models": {"application/json": error_response_model}
                 }])
-        announcements.add_method("POST", post_announcement_integration, api_key_required=False,
+        post_announcements_method = announcements.add_method("POST", post_announcement_integration, api_key_required=True,
                 request_parameters={
                     "method.request.querystring.title": True,
                     "method.request.querystring.description": True
@@ -165,3 +163,15 @@ class MicroserviceStack(core.Stack):
                     "rate_limit": 100,
                     "burst_limit": 100
                 })
+
+        plan.add_api_stage(
+            stage=api.prod_stage,
+            throttle=[{
+                    "method": post_announcements_method,
+                    "throttle": {
+                        "rate_limit": 100,
+                        "burst_limit": 100
+                    }
+                }
+            ]
+        )

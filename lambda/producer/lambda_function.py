@@ -9,14 +9,12 @@ def validate_date(date):
     return date.strftime('%d-%m-%Y')
 
 
-client = boto3.resource('dynamodb')
 TABLE_NAME = os.environ['TABLE_NAME']
 
 
 def lambda_handler(event, context):
     client = boto3.resource('dynamodb')
     table = client.Table(TABLE_NAME)
-    print(str(event['queryStringParameters']))
     try:
         response = table.put_item(
             Item = {

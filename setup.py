@@ -13,7 +13,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
 
-    author="author",
+    author="DimaAntoniuk",
 
     package_dir={"": "microservice"},
     packages=setuptools.find_packages(where="microservice"),
