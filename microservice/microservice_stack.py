@@ -102,10 +102,6 @@ class MicroserviceStack(core.Stack):
                 }])
 
         post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=True,
-                # request_parameters={
-                #     "integration.request.querystring.title": "method.request.body.title",
-                #     "integration.request.querystring.description": "method.request.body.description"
-                # },
                 integration_responses=[{
                     "statusCode": "200",
                     "body": aws_apigateway.JsonSchemaType.STRING
@@ -160,8 +156,8 @@ class MicroserviceStack(core.Stack):
 
         plan = api.add_usage_plan('UsagePlan', name='MyPlan', api_key=key,
                 throttle={
-                    "rate_limit": 100,
-                    "burst_limit": 100
+                    "rate_limit": 10000,
+                    "burst_limit": 5000
                 })
 
         plan.add_api_stage(
@@ -169,8 +165,8 @@ class MicroserviceStack(core.Stack):
             throttle=[{
                 "method": post_announcements_method,
                 "throttle": {
-                    "rate_limit": 100,
-                    "burst_limit": 100
+                    "rate_limit": 10000,
+                    "burst_limit": 5000
                 }
             }]
         )
