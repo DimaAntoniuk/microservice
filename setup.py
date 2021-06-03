@@ -22,7 +22,8 @@ setuptools.setup(
         "aws-cdk.core==1.106.1",
         "aws-cdk.aws_lambda==1.106.1",
         "aws-cdk.aws_dynamodb==1.106.1",
-        "aws-cdk.aws_apigateway==1.106.1"
+        "aws-cdk.aws_apigateway==1.106.1",
+        "marshmallow==3.12.1"
     ],
 
     python_requires=">=3.8",
