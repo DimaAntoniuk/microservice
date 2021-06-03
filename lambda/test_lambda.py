@@ -51,7 +51,7 @@ def use_moto():
                 {
                     'AttributeName': 'title',
                     'AttributeType': 'S'
-                },
+                }
             ]
         )
         return dynamodb
@@ -85,7 +85,7 @@ def fake_use_moto():
                 {
                     'AttributeName': 'title',
                     'AttributeType': 'S'
-                },
+                }
             ]
         )
         return dynamodb
@@ -110,23 +110,21 @@ def test_consumer_handler_for_valid_response(use_moto):
     table = boto3.resource('dynamodb', region_name='eu-west-3').Table(TABLE_NAME)
     table.put_item(
         Item={
-            'id': "test",
+            'id': "dd899ce1-2b3e-4b2a-8e64-e7a3c12fb388",
             'title': "test",
-            'description': "test",
-            'date': "test"
+            'description': "testtesttest",
+            'date': "2020-04-09"
         }
     )
     event = {
-        "queryStringParameters": {
-            "title":"dummy",
-            "description": "dummy"
-        }
+        "title":"dummy",
+        "description": "dummydummy"
     }
 
     return_data = producer_lambda.lambda_handler(event, "", table=table)
 
     assert return_data['statusCode'] == '200'
-    assert return_data['body'] == 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
+    assert return_data['body'] == 'Announcement "' + event['title'] + '" posted'
 
     event = {
         "statusCode": "200"
@@ -136,21 +134,15 @@ def test_consumer_handler_for_valid_response(use_moto):
     print(str(return_data))
 
     assert return_data['statusCode'] == '200'
-    body = json.loads(return_data['body'])
-    assert body[0]['id'] == 'test'
-    assert body[0]['title'] == 'test'
-    assert body[0]['description'] == 'test'
-    assert body[0]['date'] == 'test'
+    assert isinstance(return_data['body'], str)
 
 
 @mock_dynamodb2
 def test_producer_handler_for_failure(fake_use_moto):
     fake_use_moto()
     event = {
-        "queryStringParameters": {
-            "title": "dummy",
-            "description": "dummy"
-        }
+        "title": "dummy",
+        "description": "dummy"
     }
 
     return_data = producer_lambda.lambda_handler(event, "")
@@ -163,32 +155,29 @@ def test_producer_handler_for_valid_response(use_moto):
     use_moto()
     table = boto3.resource('dynamodb', region_name='eu-west-3').Table(TABLE_NAME)
     event = {
-        "queryStringParameters": {
-            "title":"dummy",
-            "description": "dummy"
-        }
+        "title":"dummy",
+        "description": "dummydummy"
     }
 
     return_data = producer_lambda.lambda_handler(event, "", table=table)
 
     assert return_data['statusCode'] == '200'
-    assert return_data['body'] == 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
+    assert return_data['body'] == 'Announcement "' + event['title'] + '" posted'
+
 
 @mock_dynamodb2
 def test_full_microservice(use_moto):
     use_moto()
     table = boto3.resource('dynamodb', region_name='eu-west-3').Table(TABLE_NAME)
     event = {
-        "queryStringParameters": {
-            "title":"test",
-            "description": "test"
-        }
+        "title":"test",
+        "description": "testtesttest"
     }
 
     return_data = producer_lambda.lambda_handler(event, "", table=table)
 
     assert return_data['statusCode'] == '200'
-    assert return_data['body'] == 'Announcement "' + event['queryStringParameters']['title'] + '" posted'
+    assert return_data['body'] == 'Announcement "' + event['title'] + '" posted'
 
     event = {
         "statusCode": "200"
@@ -198,8 +187,4 @@ def test_full_microservice(use_moto):
     print(str(return_data))
 
     assert return_data['statusCode'] == '200'
-    body = json.loads(return_data['body'])
-    assert valid_uuid(body[0]['id'])
-    assert body[0]['title'] == 'test'
-    assert body[0]['description'] == 'test'
-    assert isinstance(body[0]['date'], str)
+    assert isinstance(return_data['body'], str)
