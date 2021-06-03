@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_apigateway
 )
 from config import config
+import os.path
 
 
 class MicroserviceStack(core.Stack):
@@ -25,11 +26,16 @@ class MicroserviceStack(core.Stack):
             )
         )
 
+        marshmallow_layer = aws_lambda.LayerVersion(self, 'marshmallow',
+                                                    code = aws_lambda.AssetCode('./lambda/marshmallow.zip'),
+                                                    compatible_runtimes = [aws_lambda.Runtime.PYTHON_3_8],)
+
         # create producer lambda function
         producer_lambda = aws_lambda.Function(self, "producer_lambda_function",
                                               runtime=aws_lambda.Runtime.PYTHON_3_8,
                                               handler="lambda_function.lambda_handler",
-                                              code=aws_lambda.Code.asset("./lambda/producer"))
+                                              code=aws_lambda.Code.from_asset("./lambda/producer"),
+                                              layers=[marshmallow_layer])
 
         producer_lambda.add_environment("TABLE_NAME", announcements_table.table_name)
 
@@ -40,7 +46,8 @@ class MicroserviceStack(core.Stack):
         consumer_lambda = aws_lambda.Function(self, "consumer_lambda_function",
                                               runtime=aws_lambda.Runtime.PYTHON_3_8,
                                               handler="lambda_function.lambda_handler",
-                                              code=aws_lambda.Code.asset("./lambda/consumer"))
+                                              code=aws_lambda.Code.from_asset("./lambda/consumer"),
+                                              layers=[marshmallow_layer])
 
         consumer_lambda.add_environment("TABLE_NAME", announcements_table.table_name)
 
@@ -101,7 +108,7 @@ class MicroserviceStack(core.Stack):
                     "errorMessage": aws_apigateway.JsonSchemaType.STRING
                 }])
 
-        post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=True,
+        post_announcement_integration = aws_apigateway.LambdaIntegration(producer_lambda,proxy=False,
                 integration_responses=[{
                     "statusCode": "200",
                     "body": aws_apigateway.JsonSchemaType.STRING
@@ -130,10 +137,6 @@ class MicroserviceStack(core.Stack):
                     "response_models": {"application/json": error_response_model}
                 }])
         post_announcements_method = announcements.add_method("POST", post_announcement_integration, api_key_required=True,
-                request_parameters={
-                    "method.request.querystring.title": True,
-                    "method.request.querystring.description": True
-                },
                 method_responses=[{
                     "statusCode": "200",
                     "response_parameters": {
