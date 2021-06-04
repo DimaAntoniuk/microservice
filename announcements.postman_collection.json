@@ -58,10 +58,10 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\r\n    \"title\": \"newnewnew5\",\r\n    \"description\": \"ddddddddddddddddd5\"\r\n}"
 				},
 				"url": {
-					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements?title=testtitle&description=testdescription",
+					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements",
 					"protocol": "https",
 					"host": [
 						"6i70ry8ivk",
@@ -73,16 +73,6 @@
 					"path": [
 						"prod",
 						"announcements"
-					],
-					"query": [
-						{
-							"key": "title",
-							"value": "testtitle"
-						},
-						{
-							"key": "description",
-							"value": "testdescription"
-						}
 					]
 				}
 			},
