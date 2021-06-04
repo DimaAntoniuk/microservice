@@ -7,6 +7,20 @@
 	"item": [
 		{
 			"name": "get-announcements",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -33,6 +47,22 @@
 		},
 		{
 			"name": "post-announcements",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"posted\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "apikey",
@@ -58,7 +88,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"newnewnew5\",\r\n    \"description\": \"ddddddddddddddddd5\"\r\n}"
+					"raw": "{\r\n    \"title\": \"none\",\r\n    \"description\": \"fsdfkljflskdjflksdjkf\"\r\n}"
 				},
 				"url": {
 					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements",
