@@ -45,10 +45,9 @@ def lambda_handler(event, context, table=table):
     except ClientError as e:
         return {
             'statusCode': '400',
-            'errorMessage': '+++' + e.response['Error']['Message']
+            'errorMessage': e.response['Error']['Message']
         }
     schema = AnnouncementSchema()
-    print(str(items))
     try:
         validated_items = schema.load(items, many=True)
         result = [Announcement(**item) for item in validated_items]

@@ -115,8 +115,10 @@ class MicroserviceStack(core.Stack):
                 }, {
                     "statusCode": "400",
                     "errorMessage": aws_apigateway.JsonSchemaType.STRING
-                }],
-                )
+                }, {
+                    "statusCode": "422",
+                    "errorMessage": aws_apigateway.JsonSchemaType.STRING
+                }])
 
         announcements.add_method("GET", get_announcements_integration, api_key_required=False,
                 method_responses=[{
@@ -147,6 +149,14 @@ class MicroserviceStack(core.Stack):
                     "response_models": {"application/json": producer_response_model}
                 }, {
                     "statusCode": "400",
+                    "response_parameters": {
+                        "method.response.header._content-_type": True,
+                        "method.response.header._access-_control-_allow-_origin": True,
+                        "method.response.header._access-_control-_allow-_credentials": True
+                    },
+                    "response_models": {"application/json": error_response_model}
+                }, {
+                    "statusCode": "422",
                     "response_parameters": {
                         "method.response.header._content-_type": True,
                         "method.response.header._access-_control-_allow-_origin": True,

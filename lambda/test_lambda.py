@@ -147,7 +147,7 @@ def test_producer_handler_for_failure(fake_use_moto):
 
     return_data = producer_lambda.lambda_handler(event, "")
     assert return_data['statusCode'] == '400'
-    assert isinstance(return_data['errorMessage'], str)
+    assert isinstance(return_data['errorMessage']['description'][0], str)
 
 
 @mock_dynamodb2

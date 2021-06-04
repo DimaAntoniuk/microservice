@@ -29,14 +29,14 @@ class Announcement:
 
 
 class AnnouncementSchema(Schema):
-    id = fields.UUID(required=True, validate=validate.Regexp(r'^[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}\\Z'))
+    id = fields.UUID(required=True)
     title = fields.String(required=True, validate=validate.Length(min=3))
     description = fields.String(required=True, validate=validate.Length(min=10))
     date = fields.Date(required=True)
 
 
 def validate_date(date):
-    return date.strftime('%d-%m-%Y')
+    return date.strftime('%Y-%m-%d')
 
 
 TABLE_NAME = os.environ['TABLE_NAME']
@@ -45,15 +45,22 @@ table = client.Table(TABLE_NAME)
 
 
 def lambda_handler(event, context, table=table):
+    
+    for key in event.keys():
+        if key not in ['title', 'description']:
+            return {
+            'statusCode': '422',
+            'errorMessaage': 'Unprocessable Entity'
+        }
 
-    announcement = Announcement(id=uuid.uuid4(), 
-            title=event.get('title', '-'),
-            description=event.get('description', '-'),
-            date=date.today())
+    announcement = event
+    announcement['id'] = uuid.uuid4()
+    announcement['date'] = validate_date(date.today())
+
     schema = AnnouncementSchema()
     
     try:
-        validated_announcement = schema.dump(announcement)
+        validated_announcement = schema.load(announcement)
     except ValidationError as e:
         return {
             'statusCode': '400',
@@ -61,7 +68,7 @@ def lambda_handler(event, context, table=table):
         }
     
     try:
-        response = table.put_item(Item=validated_announcement)
+        response = table.put_item(Item=schema.dump(validated_announcement))
     except ClientError as e:
         return {
             'statusCode': '400',
