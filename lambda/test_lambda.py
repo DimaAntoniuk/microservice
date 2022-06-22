@@ -1,7 +1,6 @@
-import pytest, re
-import boto3
 import pytest
-import json
+import re
+import boto3
 import os
 
 from moto import mock_dynamodb2
@@ -117,7 +116,7 @@ def test_consumer_handler_for_valid_response(use_moto):
         }
     )
     event = {
-        "title":"dummy",
+        "title": "dummy",
         "description": "dummydummy"
     }
 
@@ -155,7 +154,7 @@ def test_producer_handler_for_valid_response(use_moto):
     use_moto()
     table = boto3.resource('dynamodb', region_name='eu-west-3').Table(TABLE_NAME)
     event = {
-        "title":"dummy",
+        "title": "dummy",
         "description": "dummydummy"
     }
 
