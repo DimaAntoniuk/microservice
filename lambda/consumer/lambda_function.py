@@ -1,4 +1,3 @@
-from time import strftime
 import boto3
 import os
 from botocore.exceptions import ClientError
