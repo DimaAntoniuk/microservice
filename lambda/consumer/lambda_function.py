@@ -1,3 +1,4 @@
+from time import strftime
 import boto3
 import os
 from botocore.exceptions import ClientError
@@ -19,6 +20,14 @@ class Announcement:
         self.description = description
         self.date = date
     
+    def to_json(self):
+        return {
+            "id": str(self.id),
+            "title": self.title,
+            "description": self.description,
+            "date": self.date.strftime("%d-%m-%Y")
+        }
+
     @full
     def __repr__(self):
         return f'{type(self).__name__}[{self.id}]'
@@ -50,7 +59,7 @@ def lambda_handler(event, context, table=table):
     schema = AnnouncementSchema()
     try:
         validated_items = schema.load(items, many=True)
-        result = [Announcement(**item) for item in validated_items]
+        result = [Announcement(**item).to_json() for item in validated_items]
     except ValidationError as e:
         return {
             'statusCode': '400',
@@ -58,5 +67,5 @@ def lambda_handler(event, context, table=table):
         }
     return {
         'statusCode': '200',
-        'body': f'{repr(result)}'
+        'body': result
     }

@@ -133,7 +133,7 @@ def test_consumer_handler_for_valid_response(use_moto):
     print(str(return_data))
 
     assert return_data['statusCode'] == '200'
-    assert isinstance(return_data['body'], str)
+    assert isinstance(return_data['body'], list)
 
 
 @mock_dynamodb2
@@ -186,4 +186,4 @@ def test_full_microservice(use_moto):
     print(str(return_data))
 
     assert return_data['statusCode'] == '200'
-    assert isinstance(return_data['body'], str)
+    assert isinstance(return_data['body'], list)
