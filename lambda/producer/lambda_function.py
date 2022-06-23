@@ -69,7 +69,7 @@ def lambda_handler(event, context, table=table):
         }
 
     try:
-        _ = table.put_item(Item=schema.dump(validated_announcement))
+        table.put_item(Item=schema.dump(validated_announcement))
     except ClientError as e:
         return {
             'statusCode': '400',
