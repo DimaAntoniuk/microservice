@@ -22,7 +22,7 @@ class Announcement:
         self.title = title
         self.description = description
         self.date = date
-    
+
     @full
     def __repr__(self):
         return f'{type(self).__name__}[{self.id}]'
@@ -31,7 +31,8 @@ class Announcement:
 class AnnouncementSchema(Schema):
     id = fields.UUID(required=True)
     title = fields.String(required=True, validate=validate.Length(min=3))
-    description = fields.String(required=True, validate=validate.Length(min=10))
+    description = fields.String(required=True,
+                                validate=validate.Length(min=10))
     date = fields.Date(required=True)
 
 
@@ -45,20 +46,20 @@ table = client.Table(TABLE_NAME)
 
 
 def lambda_handler(event, context, table=table):
-    
+
     for key in event.keys():
         if key not in ['title', 'description']:
             return {
-            'statusCode': '422',
-            'errorMessaage': 'Unprocessable Entity'
-        }
+                'statusCode': '422',
+                'errorMessaage': 'Unprocessable Entity'
+            }
 
     announcement = event
     announcement['id'] = uuid.uuid4()
     announcement['date'] = validate_date(date.today())
 
     schema = AnnouncementSchema()
-    
+
     try:
         validated_announcement = schema.load(announcement)
     except ValidationError as e:
@@ -66,15 +67,15 @@ def lambda_handler(event, context, table=table):
             'statusCode': '400',
             'errorMessage': e.messages
         }
-    
+
     try:
-        response = table.put_item(Item=schema.dump(validated_announcement))
+        table.put_item(Item=schema.dump(validated_announcement))
     except ClientError as e:
         return {
             'statusCode': '400',
             'errorMessage': e.response['Error']['Message']
         }
-    
+
     return {
         'statusCode': '200',
         'body': 'Announcement "' + event['title'] + '" posted'
