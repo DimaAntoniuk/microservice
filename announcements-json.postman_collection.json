@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "12f2fdfb-468f-4cc1-be10-68b708470724",
-		"name": "announcements",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "fc33e6dc-0fe9-4a50-9c29-b7c93773b4a0",
+		"name": "announcements-json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7487290"
 	},
 	"item": [
 		{
@@ -28,10 +29,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+					"raw": "https://b6v5epnzp5.execute-api.eu-west-3.amazonaws.com/prod/announcements",
 					"protocol": "https",
 					"host": [
-						"6i70ry8ivk",
+						"b6v5epnzp5",
 						"execute-api",
 						"eu-west-3",
 						"amazonaws",
@@ -68,13 +69,13 @@
 					"type": "apikey",
 					"apikey": [
 						{
-							"key": "key",
-							"value": "x-api-key",
+							"key": "value",
+							"value": "hOrtoARluI96Cz9VrCTsN5NUpDNCb7fO8vzDX5Xi",
 							"type": "string"
 						},
 						{
-							"key": "value",
-							"value": "5uaHfGPQ6j3fp1lZCxwWH18mZoFihBdS9TvmWeN6",
+							"key": "key",
+							"value": "x-api-key",
 							"type": "string"
 						},
 						{
@@ -88,13 +89,13 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"none\",\r\n    \"description\": \"fsdfkljflskdjflksdjkf\"\r\n}"
+					"raw": "{\r\n    \"title\": \"title2022\",\r\n    \"description\": \"description2022\"\r\n}"
 				},
 				"url": {
-					"raw": "https://6i70ry8ivk.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+					"raw": "https://b6v5epnzp5.execute-api.eu-west-3.amazonaws.com/prod/announcements",
 					"protocol": "https",
 					"host": [
-						"6i70ry8ivk",
+						"b6v5epnzp5",
 						"execute-api",
 						"eu-west-3",
 						"amazonaws",
