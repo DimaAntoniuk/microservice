@@ -51,7 +51,7 @@ def lambda_handler(event, context, table=table):
         if key not in ['title', 'description']:
             return {
                 'statusCode': '422',
-                'errorMessaage': 'Unprocessable Entity'
+                'errorMessage': 'Unprocessable Entity'
             }
 
     announcement = event
