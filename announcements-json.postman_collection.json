@@ -1,0 +1,323 @@
+{
+	"info": {
+		"_postman_id": "fc33e6dc-0fe9-4a50-9c29-b7c93773b4a0",
+		"name": "announcements-json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7487290"
+	},
+	"item": [
+		{
+			"name": "SUCCESS",
+			"item": [
+				{
+					"name": "get-announcements",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"var Ajv = require('ajv');\r",
+									"var ajv = new Ajv({logger: console});\r",
+									"var schema = JSON.parse(pm.variables.get(\"announcement.microservice.schema-success-get\"));\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test('Schema is valid', function() {\r",
+									"    pm.expect(ajv.validate(schema, response), JSON.stringify(ajv.errors)).to.be.true\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://b6v5epnzp5.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+							"protocol": "https",
+							"host": [
+								"b6v5epnzp5",
+								"execute-api",
+								"eu-west-3",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"prod",
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post-announcements",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"var Ajv = require('ajv');\r",
+									"var ajv = new Ajv({logger: console});\r",
+									"var schema = JSON.parse(pm.variables.get(\"announcement.microservice.schema-success-post\"));\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test('Schema is valid', function() {\r",
+									"    pm.expect(ajv.validate(schema, response), JSON.stringify(ajv.errors)).to.be.true\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"posted\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "hOrtoARluI96Cz9VrCTsN5NUpDNCb7fO8vzDX5Xi",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-api-key",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"title2022\",\r\n    \"description\": \"description2022\"\r\n}"
+						},
+						"url": {
+							"raw": "https://b6v5epnzp5.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+							"protocol": "https",
+							"host": [
+								"b6v5epnzp5",
+								"execute-api",
+								"eu-west-3",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"prod",
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ERROR",
+			"item": [
+				{
+					"name": "post-announcements - Unprocessable Entity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"var Ajv = require('ajv');\r",
+									"var ajv = new Ajv({logger: console});\r",
+									"var schema = JSON.parse(pm.variables.get(\"announcement.microservice.schema-error\"));\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test('Schema is valid', function() {\r",
+									"    pm.expect(ajv.validate(schema, response), JSON.stringify(ajv.errors)).to.be.true\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "hOrtoARluI96Cz9VrCTsN5NUpDNCb7fO8vzDX5Xi",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-api-key",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"title2022\",\r\n    \"description\": \"description2022\",\r\n    \"redundantattribute\": \"error\"\r\n}"
+						},
+						"url": {
+							"raw": "https://b6v5epnzp5.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+							"protocol": "https",
+							"host": [
+								"b6v5epnzp5",
+								"execute-api",
+								"eu-west-3",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"prod",
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post-announcements - Bad Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"var Ajv = require('ajv');\r",
+									"var ajv = new Ajv({logger: console});\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"message\": {\r",
+									"            \"type\": \"string\"\r",
+									"        }\r",
+									"    },\r",
+									"    \"additionalProperties\": false,\r",
+									"    \"required\": [\"message\"]\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"pm.test('Schema is valid', function() {\r",
+									"    pm.expect(ajv.validate(schema, response), JSON.stringify(ajv.errors)).to.be.true\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "bad key",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-api-key",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"title2022\",\r\n    \"description\": \"description2022\"\r\n}"
+						},
+						"url": {
+							"raw": "https://b6v5epnzp5.execute-api.eu-west-3.amazonaws.com/prod/announcements",
+							"protocol": "https",
+							"host": [
+								"b6v5epnzp5",
+								"execute-api",
+								"eu-west-3",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"prod",
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "announcement.microservice.schema-success-get",
+			"value": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"statusCode\": {\n            \"type\": \"string\"\n        },\n        \"body\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"id\": {\n                        \"type\": \"string\"\n                    },\n                    \"title\": {\n                        \"type\": \"string\"\n                    },\n                    \"description\": {\n                        \"type\": \"string\"\n                    },\n                    \"date\": {\n                        \"type\": \"string\"\n                    }\n                },\n                \"additionalProperties\": false,\n                \"required\": [\"id\", \"title\", \"description\", \"date\"]\n            }\n        }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\"statusCode\", \"body\"]\n}",
+			"type": "string"
+		},
+		{
+			"key": "announcement.microservice.schema-success-post",
+			"value": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"statusCode\": {\n            \"type\": \"string\"\n        },\n        \"body\": {\n            \"type\": \"string\",\n            \"minLength\": 0\n        }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\"statusCode\", \"body\"]\n}",
+			"type": "string"
+		},
+		{
+			"key": "announcement.microservice.schema-error",
+			"value": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"statusCode\": {\n            \"type\": \"string\"\n        },\n        \"errorMessage\": {\n            \"type\": \"string\"\n        }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\"statusCode\", \"errorMessage\"]\n}",
+			"type": "string"
+		}
+	]
+}

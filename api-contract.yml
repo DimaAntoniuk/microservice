@@ -1,0 +1,209 @@
+openapi: 3.0.3
+info:
+  version: 0.0.1
+  title: D2B Asset Service
+
+servers:
+  - url: 'https://{api_id}.execute-api.{region}.amazonaws.com/prod/announcements'
+    description: Test server
+    variables:
+      api_id:
+        default: b6v5epnzp5
+        enum:
+          - b6v5epnzp5
+      region:
+        default: eu-west-3
+        enum:
+          - eu-west-3
+
+paths:
+
+  /announcements:
+    get:
+      description: Gets all announcements
+      parameters:
+        - $ref: '#/components/parameters/acceptEncoding'
+        - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              $ref: '#/components/headers/ContentType'
+            Content-Encoding:
+              $ref: '#/components/headers/ContentEncoding'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAnnouncementSuccessResponse'
+        '400':
+          $ref: '#/components/responses/ApiError'
+
+    post:
+      description: Create the announcement
+      parameters:
+        - $ref: '#/components/parameters/apiKey'
+        - $ref: '#/components/parameters/acceptEncoding'
+        - $ref: '#/components/parameters/accept'
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              $ref: '#/components/headers/ContentType'
+            Content-Encoding:
+              $ref: '#/components/headers/ContentEncoding'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAnnouncementSuccessResponse'
+        '400':
+          $ref: '#/components/responses/ApiError'
+
+components:
+
+  headers:
+
+    CacheControl:
+      schema:
+        type: string
+    ContentEncoding:
+      schema:
+        type: string
+      description: Content encoding served by the API
+      example: gzip
+    ContentType:
+      schema:
+        type: string
+      description: Content type served by the API. (application/json)
+      example: application/json
+
+  parameters:
+
+    apiKey:
+      name: x-api-key
+      description: API client identifier.
+      in: header
+      required: true
+      schema:
+        type: string
+      example: ad3ed34fdsf32322
+
+    acceptEncoding:
+      name: Accept-Encoding
+      description: >-
+        List of encodings accepted by client. gzip encoding can be requested to
+        save bandwidth usage
+      in: header
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: simple
+      example:
+        - gzip
+
+    accept:
+      name: Accept
+      description: >-
+        List of content types accepted by client. Assumed application/json when
+        missing. Must include application/json when provided.
+      in: header
+      schema:
+        type: array
+        items:
+          type: string
+      style: simple
+      example:
+        - application/json
+
+  responses:
+
+    ApiError:
+      description: Request failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+      headers:
+        Content-Type:
+          $ref: '#/components/headers/ContentType'
+        Content-Encoding:
+          $ref: '#/components/headers/ContentEncoding'
+
+  schemas:
+
+    GetAnnouncementSuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 200
+        body:
+          type: array
+          items:
+            $ref: "#/components/schemas/Announcement"
+      additionalProperties: false
+      required:
+        - body
+        - status
+
+    PostAnnouncementSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Success Response Example
+      additionalProperties: false
+      required:
+        - message
+    
+    Announcement:
+      type: object
+      description: Representation of an Announcement
+      properties:
+        id:
+          type: string
+          description: >-
+            Announcement id
+          example: ec9ecb90-0e28-4646-8628-8f5e8690c396
+        title:
+          type: string
+          description: Announcement title
+          example: dummy title
+        description:
+          type: string
+          description: Announcement description
+          example: dummy description
+        date:
+          type: string
+          description: >-
+            Announcement creation date
+          example: 22-06-2022
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - description
+        - date
+    
+    ApiError:
+      type: object
+      description: Error response structure
+      properties:
+        statusCode:
+          type: string
+          description: Status code
+          example: 400
+        errorMessage:
+          type: string
+          description: Error message
+          example: Unprocessable Entity
+      required:
+        - statusCode
+        - errorMessage
